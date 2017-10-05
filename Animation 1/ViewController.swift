@@ -14,11 +14,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var drawView: DrawView!
     
     @IBAction func startAnimation(_ sender: UIButton) {
-        UIView.animate(withDuration: 4, animations: { () -> Void in
-            for i in 0 ..< self.drawView.numberOfSections {
-                self.drawView.startAnimation(index: i)
-            }
-        })
+            var index = 0
+            UIView.animate(withDuration: 10, delay: 1, options: .curveEaseIn, animations:{ () -> Void in
+                if index == 4 {
+                    index=0
+                }
+                self.drawView.startAnimation(index: index)
+                index += 1
+        }, completion: nil)
+        
     }
     
     @IBAction func stopAnimation(_ sender: UIButton) {
