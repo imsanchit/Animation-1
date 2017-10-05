@@ -12,6 +12,7 @@
 		75A5BC171F84BDAD00A1FC5B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75A5BC151F84BDAD00A1FC5B /* Main.storyboard */; };
 		75A5BC191F84BDAD00A1FC5B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75A5BC181F84BDAD00A1FC5B /* Assets.xcassets */; };
 		75A5BC1C1F84BDAD00A1FC5B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75A5BC1A1F84BDAD00A1FC5B /* LaunchScreen.storyboard */; };
+		75A5BC2A1F84C3B700A1FC5B /* DrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A5BC291F84C3B700A1FC5B /* DrawView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		75A5BC181F84BDAD00A1FC5B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75A5BC1B1F84BDAD00A1FC5B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75A5BC1D1F84BDAD00A1FC5B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75A5BC291F84C3B700A1FC5B /* DrawView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				75A5BC101F84BDAD00A1FC5B /* Animation 1 */,
-				75A5BC0F1F84BDAD00A1FC5B /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -49,19 +50,46 @@
 				75A5BC0E1F84BDAD00A1FC5B /* Animation 1.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		75A5BC101F84BDAD00A1FC5B /* Animation 1 */ = {
 			isa = PBXGroup;
 			children = (
-				75A5BC111F84BDAD00A1FC5B /* AppDelegate.swift */,
-				75A5BC131F84BDAD00A1FC5B /* ViewController.swift */,
-				75A5BC151F84BDAD00A1FC5B /* Main.storyboard */,
-				75A5BC181F84BDAD00A1FC5B /* Assets.xcassets */,
-				75A5BC1A1F84BDAD00A1FC5B /* LaunchScreen.storyboard */,
-				75A5BC1D1F84BDAD00A1FC5B /* Info.plist */,
+				75A5BC261F84BE0700A1FC5B /* View Controllers */,
+				75A5BC251F84BDE800A1FC5B /* StoryBoard and Xibs */,
+				75A5BC241F84BDC500A1FC5B /* Supporting Files */,
+				75A5BC0F1F84BDAD00A1FC5B /* Products */,
 			);
 			path = "Animation 1";
+			sourceTree = "<group>";
+		};
+		75A5BC241F84BDC500A1FC5B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				75A5BC181F84BDAD00A1FC5B /* Assets.xcassets */,
+				75A5BC1D1F84BDAD00A1FC5B /* Info.plist */,
+				75A5BC1A1F84BDAD00A1FC5B /* LaunchScreen.storyboard */,
+				75A5BC111F84BDAD00A1FC5B /* AppDelegate.swift */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		75A5BC251F84BDE800A1FC5B /* StoryBoard and Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				75A5BC151F84BDAD00A1FC5B /* Main.storyboard */,
+			);
+			name = "StoryBoard and Xibs";
+			sourceTree = "<group>";
+		};
+		75A5BC261F84BE0700A1FC5B /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				75A5BC291F84C3B700A1FC5B /* DrawView.swift */,
+				75A5BC131F84BDAD00A1FC5B /* ViewController.swift */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,6 +166,7 @@
 			files = (
 				75A5BC141F84BDAD00A1FC5B /* ViewController.swift in Sources */,
 				75A5BC121F84BDAD00A1FC5B /* AppDelegate.swift in Sources */,
+				75A5BC2A1F84C3B700A1FC5B /* DrawView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
