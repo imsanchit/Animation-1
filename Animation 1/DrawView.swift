@@ -16,7 +16,7 @@ class DrawView: UIView {
         }
     }
     
-    var paths: [UIBezierPath]?
+    var paths: [UIBezierPath] = []
     var centre: CGPoint = CGPoint(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
     
     @IBInspectable
@@ -29,25 +29,26 @@ class DrawView: UIView {
     var lineWidth: CGFloat = 5 { didSet { setNeedsDisplay() } }
     
     override func draw(_ rect: CGRect) {
-        paths?.removeAll()
+        paths.removeAll()
         var startAngle: CGFloat = 0
         while startAngle < CGFloat(2*Double.pi) {
             let path = definePath(startAngle: &startAngle)
-            paths?.append(path)
+            paths.append(path)
             path.stroke()
             colorCircleIn(path: path)
         }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
         checkTouchInCircle(touch: touch!)
     }
     
-    
     func definePath(startAngle: inout CGFloat) -> UIBezierPath {
         let path = UIBezierPath()
         path.lineWidth = lineWidth
+        print(startAngle)
         path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + (CGFloat(2*Double.pi) / CGFloat(numberOfSections)), clockwise: true)
         startAngle = startAngle + CGFloat(2*Double.pi) / CGFloat(numberOfSections)
         path.addLine(to: centre)
@@ -63,17 +64,41 @@ class DrawView: UIView {
     }
     
     func checkTouchInCircle(touch: UITouch) {
-        var startAngle: CGFloat = 0
-        while startAngle < CGFloat(2*Double.pi) {
-            let path = definePath(startAngle: &startAngle)
-            if path.contains((touch.location(in: self))) {
-                colorPath = path
-                setNeedsDisplay()
-                return
-            }
-        }
+        
+        let startingPoint: CGPoint = CGPoint(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+        let endingPoint: CGPoint = (touch.location(in: self))
+        let radians: Float = atan2f(Float(endingPoint.y - startingPoint.y), Float(endingPoint.x - startingPoint.x))
+        var degrees: Float = radians * Float(180.0 / .pi)
+        degrees = degrees > 0.0 ? degrees : (360.0 + degrees)
+        let eachAngle: Float = Float(360 / numberOfSections)
+        let a:Int = Int(degrees / eachAngle)
+        colorPath = paths[a]
+        
+//        let eachAngle: Float = Float(360 / numberOfSections)
+//        let startAngle: CGFloat = CGFloat(Int(degrees / eachAngle) * 360/numberOfSections)
+        
+//        let path = UIBezierPath()
+//        path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + (CGFloat(2*Double.pi) / CGFloat(numberOfSections)), clockwise: true)
+//        path.addLine(to: centre)
+//        path.close()
+//        colorPath = path
+
+        
+        
+//        colorPath = path
+        
+        
+//        var startAngle: CGFloat = 0
+//        while startAngle < CGFloat(2*Double.pi) {
+//            let path = definePath(startAngle: &startAngle)
+//            if path.contains((touch.location(in: self))) {
+//                colorPath = path
+//                setNeedsDisplay()
+//                return
+//            }
+//        }
     }
-//    func startAnimation() {
-//        colorPath = paths?[2]
-//    }
+    func startAnimation(index: Int) {
+        colorPath = paths[index]
+    }
 }

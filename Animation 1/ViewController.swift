@@ -14,12 +14,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var drawView: DrawView!
     
     @IBAction func startAnimation(_ sender: UIButton) {
-////        UIView.animate(withDuration: 4, animations: { () -> Void in
-//            UIView.animate(withDuration: 10, delay: 0.4, options: [],
-//                           animations: {
-//                            self.drawView.transform = .concatenating(<#T##CGAffineTransform#>)
-//            }            )//
-////        })
+        UIView.animate(withDuration: 4, animations: { () -> Void in
+            for i in 0 ..< self.drawView.numberOfSections {
+                self.drawView.startAnimation(index: i)
+            }
+        })
     }
     
     @IBAction func stopAnimation(_ sender: UIButton) {
