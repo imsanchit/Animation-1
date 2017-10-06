@@ -10,95 +10,167 @@ import UIKit
 
 @IBDesignable
 class DrawView: UIView {
-    var colorPath: UIBezierPath? {
+    
+    var selectedSegmentIndex: Int? {
         didSet {
             setNeedsDisplay()
         }
     }
-    
-    var paths: [UIBezierPath] = []
-    var centre: CGPoint = CGPoint(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+    let animation = CABasicAnimation(keyPath: "position")
+
+    private var centre: CGPoint = CGPoint(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+    private var doAnimation = false
     
     @IBInspectable
     var radius: CGFloat = 100 { didSet { setNeedsDisplay() } }
     
     @IBInspectable
-    var numberOfSections: Int = 6 { didSet { setNeedsDisplay() } }
-
-    @IBInspectable
-    var lineWidth: CGFloat = 5 { didSet { setNeedsDisplay() } }
+    var numberOfSections: Int = 12 { didSet { setNeedsDisplay() } }
     
-    override func draw(_ rect: CGRect) {
-        paths.removeAll()
-        var startAngle: CGFloat = 0
-        while startAngle < CGFloat(2*Double.pi) {
-            let path = definePath(startAngle: &startAngle)
-            paths.append(path)
-            path.stroke()
-            colorCircleIn(path: path)
-        }
+    private var spinLayer: CAShapeLayer? = nil
+
+    private var eachSegmentAngle: CGFloat = 0
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    func commonInit() {
+        eachSegmentAngle = CGFloat(2*Double.pi) / CGFloat(numberOfSections)
+        
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
-        checkTouchInCircle(touch: touch!)
+        findSelectedSegmentFor(touch: touch!)
     }
     
-    func definePath(startAngle: inout CGFloat) -> UIBezierPath {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first
+        findSelectedSegmentFor(touch: touch!)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        selectedSegmentIndex = nil
+    }
+
+    override func draw(_ rect: CGRect) {
+        for index in 0 ..< numberOfSections {
+            let startAngle = CGFloat(index) * eachSegmentAngle
+            definePath(startAngle: startAngle, index: index)
+        }
+    }
+
+    func startAnimation() {
+        
+        guard !doAnimation else {
+            return
+        }
+        doAnimation = true
+        
+        spinLayer = CAShapeLayer()
+        spinLayer?.path = createPathForAnimation().cgPath
+/*
+ spinLayer?.bounds = CGRect(origin: centre, size: CGSize.init(width: radius, height: radius))
+ spinLayer?.position = centre
+ spinLayer?.anchorPoint = CGPoint(x: 0, y: 0)
+ spinLayer?.add(rotation, forKey: "rotation")
+*/
+ 
+        let rotation = CABasicAnimation(keyPath: "transform.rotation")
+        rotation.byValue = eachSegmentAngle
+        rotation.fromValue = 0
+        rotation.toValue = 360
+        rotation.duration = 700
+        rotation.repeatCount = Float.infinity
+        spinLayer?.fillColor = UIColor.green.cgColor
+        
+        spinLayer?.bounds = CGRect(origin: centre, size: CGSize.init(width: radius, height: radius))
+        spinLayer?.position = centre
+        spinLayer?.anchorPoint = CGPoint(x: 0, y: 0)
+        spinLayer?.add(rotation, forKey: "rotation")
+        
+        
+        
+//        spinLayer?.backgroundColor = UIColor.gray.cgColor
+//        spinLayer?.bounds = CGRect(origin: CGPoint(x: 100, y: 100), size: CGSize(width: radius, height: radius))
+//        spinLayer?.position = CGPoint(x: 100, y: 400)
+//        spinLayer?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        layer.addSublayer(spinLayer!)
+    }
+    
+    func stopAnimation() {
+        spinLayer?.removeAllAnimations()
+        doAnimation = false
+        spinLayer?.removeFromSuperlayer()
+    }
+    
+    
+    
+    
+    func createPathForAnimation() -> UIBezierPath {
+        let startAngle: CGFloat = 0
         let path = UIBezierPath()
-        path.lineWidth = lineWidth
-        print(startAngle)
-        path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + (CGFloat(2*Double.pi) / CGFloat(numberOfSections)), clockwise: true)
-        startAngle = startAngle + CGFloat(2*Double.pi) / CGFloat(numberOfSections)
+        path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + eachSegmentAngle, clockwise: true)
         path.addLine(to: centre)
         path.close()
+        UIColor.red.setFill()
+        path.fill()
         return path
     }
     
-    func colorCircleIn(path: UIBezierPath) {
-        if path == colorPath {
+    func definePath(startAngle: CGFloat, index: Int) {
+        let path = UIBezierPath()
+        path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + eachSegmentAngle, clockwise: true)
+        let firstPointOfSegment = path.currentPoint
+        path.addLine(to: centre)
+        path.close()
+        
+        if selectedSegmentIndex == index {
             UIColor.red.setFill()
-            path.fill()
+        } else {
+            UIColor.clear.setFill()
         }
+        path.fill()
+        let secondPointOfSegment = path.currentPoint
+        let label = createLabelForSegment(index: index, firstPointOfSegment: firstPointOfSegment, secondPointOfSegment: secondPointOfSegment)
+        addSubview(label)
+        
+        path.stroke()
     }
     
-    func checkTouchInCircle(touch: UITouch) {
+
+    func createLabelForSegment(index: Int, firstPointOfSegment: CGPoint, secondPointOfSegment: CGPoint) -> UILabel {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 21, height: 21))
+        var midPoint = CGPoint(x: (firstPointOfSegment.x + secondPointOfSegment.x)/2, y: (firstPointOfSegment.y + secondPointOfSegment.y)/2)
+        midPoint.x = (midPoint.x + centre.x) / 2
+        midPoint.y = (midPoint.y + centre.y) / 2
         
+        label.center = midPoint
+        label.textAlignment = .left
+        label.text = String(index)
+        return label
+    }
+    
+    func findSelectedSegmentFor(touch: UITouch) {
         let startingPoint: CGPoint = CGPoint(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
         let endingPoint: CGPoint = (touch.location(in: self))
+        let xDist = startingPoint.x - endingPoint.x
+        let yDist = startingPoint.y - endingPoint.y
+        let distance = CGFloat(sqrt((xDist * xDist) + (yDist * yDist)))
+        guard distance <= radius else {
+            return
+        }
         let radians: Float = atan2f(Float(endingPoint.y - startingPoint.y), Float(endingPoint.x - startingPoint.x))
         var degrees: Float = radians * Float(180.0 / .pi)
         degrees = degrees > 0.0 ? degrees : (360.0 + degrees)
         let eachAngle: Float = Float(360 / numberOfSections)
-        let a:Int = Int(degrees / eachAngle)
-        colorPath = paths[a]
-        
-//        let eachAngle: Float = Float(360 / numberOfSections)
-//        let startAngle: CGFloat = CGFloat(Int(degrees / eachAngle) * 360/numberOfSections)
-        
-//        let path = UIBezierPath()
-//        path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + (CGFloat(2*Double.pi) / CGFloat(numberOfSections)), clockwise: true)
-//        path.addLine(to: centre)
-//        path.close()
-//        colorPath = path
-
-        
-        
-//        colorPath = path
-        
-        
-//        var startAngle: CGFloat = 0
-//        while startAngle < CGFloat(2*Double.pi) {
-//            let path = definePath(startAngle: &startAngle)
-//            if path.contains((touch.location(in: self))) {
-//                colorPath = path
-//                setNeedsDisplay()
-//                return
-//            }
-//        }
-    }
-    func startAnimation(index: Int) {
-        colorPath = paths[index]
+        selectedSegmentIndex = Int(degrees / eachAngle)
     }
 }

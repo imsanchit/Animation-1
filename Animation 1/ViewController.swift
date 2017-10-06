@@ -11,21 +11,32 @@ import Foundation
 
 class ViewController: UIViewController {
 
+    var doAnimation: Bool = false
     @IBOutlet weak var drawView: DrawView!
     
     @IBAction func startAnimation(_ sender: UIButton) {
-            var index = 0
-            UIView.animate(withDuration: 10, delay: 1, options: .curveEaseIn, animations:{ () -> Void in
-                if index == 4 {
-                    index=0
-                }
-                self.drawView.startAnimation(index: index)
-                index += 1
-        }, completion: nil)
-        
+        doAnimation = true
+        drawView.startAnimation()
+//        var index:Int = 0
+//        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//            guard let strongSelf = self else { return }
+//            while strongSelf.doAnimation {
+//                if index == strongSelf.drawView.numberOfSections {
+//                    index = 0
+//                }
+//                DispatchQueue.main.async {
+//                    UIView.animate(withDuration: 1, animations: {
+//                        strongSelf.drawView.selectedSegmentIndex = index
+//                    }, completion: nil)
+//                }
+//                index = index + 1
+//            }
+//        }
     }
     
     @IBAction func stopAnimation(_ sender: UIButton) {
+        doAnimation = false
+        drawView.stopAnimation()
     }
     
     override var prefersStatusBarHidden: Bool {
