@@ -76,32 +76,18 @@ class DrawView: UIView {
         
         spinLayer = CAShapeLayer()
         spinLayer?.path = createPathForAnimation().cgPath
-/*
- spinLayer?.bounds = CGRect(origin: centre, size: CGSize.init(width: radius, height: radius))
- spinLayer?.position = centre
- spinLayer?.anchorPoint = CGPoint(x: 0, y: 0)
- spinLayer?.add(rotation, forKey: "rotation")
-*/
- 
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
-        rotation.byValue = eachSegmentAngle
+        rotation.byValue = 3 * eachSegmentAngle
         rotation.fromValue = 0
-        rotation.toValue = 360
-        rotation.duration = 700
-        rotation.repeatCount = Float.infinity
+        rotation.toValue = 2 * Double.pi
+        spinLayer?.repeatCount = 1
+//        spinLayer?.duration = 5
+        
         spinLayer?.fillColor = UIColor.green.cgColor
-        
-        spinLayer?.bounds = CGRect(origin: centre, size: CGSize.init(width: radius, height: radius))
+        spinLayer?.bounds = CGRect(origin: CGPoint.zero, size: CGSize(width: radius, height: radius))
         spinLayer?.position = centre
-        spinLayer?.anchorPoint = CGPoint(x: 0, y: 0)
+        spinLayer?.anchorPoint = CGPoint.zero
         spinLayer?.add(rotation, forKey: "rotation")
-        
-        
-        
-//        spinLayer?.backgroundColor = UIColor.gray.cgColor
-//        spinLayer?.bounds = CGRect(origin: CGPoint(x: 100, y: 100), size: CGSize(width: radius, height: radius))
-//        spinLayer?.position = CGPoint(x: 100, y: 400)
-//        spinLayer?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         layer.addSublayer(spinLayer!)
     }
     
@@ -117,8 +103,8 @@ class DrawView: UIView {
     func createPathForAnimation() -> UIBezierPath {
         let startAngle: CGFloat = 0
         let path = UIBezierPath()
-        path.addArc(withCenter: centre, radius: radius, startAngle: startAngle, endAngle: startAngle + eachSegmentAngle, clockwise: true)
-        path.addLine(to: centre)
+        path.addArc(withCenter: CGPoint.zero, radius: radius, startAngle: startAngle, endAngle: startAngle + eachSegmentAngle, clockwise: true)
+        path.addLine(to: CGPoint.zero)
         path.close()
         UIColor.red.setFill()
         path.fill()

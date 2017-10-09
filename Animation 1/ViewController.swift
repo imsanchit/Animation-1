@@ -11,31 +11,13 @@ import Foundation
 
 class ViewController: UIViewController {
 
-    var doAnimation: Bool = false
     @IBOutlet weak var drawView: DrawView!
     
     @IBAction func startAnimation(_ sender: UIButton) {
-        doAnimation = true
         drawView.startAnimation()
-//        var index:Int = 0
-//        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-//            guard let strongSelf = self else { return }
-//            while strongSelf.doAnimation {
-//                if index == strongSelf.drawView.numberOfSections {
-//                    index = 0
-//                }
-//                DispatchQueue.main.async {
-//                    UIView.animate(withDuration: 1, animations: {
-//                        strongSelf.drawView.selectedSegmentIndex = index
-//                    }, completion: nil)
-//                }
-//                index = index + 1
-//            }
-//        }
     }
     
     @IBAction func stopAnimation(_ sender: UIButton) {
-        doAnimation = false
         drawView.stopAnimation()
     }
     
